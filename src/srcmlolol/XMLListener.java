@@ -9,12 +9,12 @@ public class XMLListener implements ParseTreeListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
-        System.out.println("HI " + ctx.getClass().getCanonicalName() + " " + ctx.getText() );
+        System.out.println("<" + ctx.getClass().getCanonicalName() + ">");
     }
 
     @Override
     public void exitEveryRule(ParserRuleContext ctx) {
-        System.out.println("BYE " + ctx.getClass().getCanonicalName() + " " + ctx.getText() );
+        System.out.println("</" + ctx.getClass().getCanonicalName() + ">" );
     }
 
     @Override
@@ -23,6 +23,7 @@ public class XMLListener implements ParseTreeListener {
 
     @Override
     public void visitTerminal(TerminalNode node) {
+        System.out.println(node.getText());
     }
 
 }
