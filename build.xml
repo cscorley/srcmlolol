@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="dist" name="Create Runnable Jar for Project srcmlolol">
+    <property name="src" location="src"/>
+    <property name="build" location="bin"/>
+    <property name="dist"  location="dist"/>
+    <property name="antlr"  location="/usr/share/java/antlr-4.5-complete.jar"/>
+
+    <target name="init">
+        <tstamp/>
+        <mkdir dir="${build}"/>
+        <mkdir dir="${dist}"/>
+    </target>
+
+    <target name="compile" depends="init" description="compile the source " >
+        <javac srcdir="${src}" destdir="${build}">
+            <classpath>
+                <pathelement path="${antlr}"/>
+            </classpath>
+        </javac>
+    </target>
+
+    <target name="dist" depends="compile" description="generate the distribution" >
+        <mkdir dir="${dist}"/>
+        <jar destfile="${dist}/srcMLOLOL.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="srcmlolol.App"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="${build}"/>
+            <zipfileset excludes="META-INF/*.SF" src="${antlr}"/>
+        </jar>
+    </target>
+
+    <target name="clean" description="clean up" >
+        <!-- Delete the ${build} and ${dist} directory trees -->
+        <delete dir="${build}"/>
+        <delete dir="${dist}"/>
+    </target>
+
+</project>
