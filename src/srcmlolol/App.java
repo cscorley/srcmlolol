@@ -18,6 +18,7 @@ import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.Parser;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.TokenStream;
 
@@ -102,6 +103,7 @@ public class App {
             }
             Constructor<? extends Parser> parserCtor = parserClass
                     .getConstructor(TokenStream.class);
+
             parser = parserCtor.newInstance((TokenStream) null);
         }
 
@@ -161,7 +163,10 @@ public class App {
                 ParserRuleContext tree = (ParserRuleContext) startRule.invoke(parser,
                         (Object[]) null);
 
-                System.out.println(tree.toStringTree(parser));
+                ParseTreeWalker walker = new ParseTreeWalker();
+                XMLListener proxy = new XMLListener();
+                walker.walk(proxy, tree);
+
             } catch (NoSuchMethodException nsme) {
                 System.err.println("No method for rule " + this.startRuleName
                         + " or it has arguments");
