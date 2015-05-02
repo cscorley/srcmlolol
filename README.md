@@ -14,14 +14,11 @@ Usage
 -----
 
 1. Compile grammar with ANTLR4:
-
 ``` shell
 antlr4 Java.g4
 javac *.java
 ```
-
 2. Compile and run srcMLOLOL:
-
 ``` shell
 ant
 java -jar dist/srcMLOLOL.jar Java Lol.java
