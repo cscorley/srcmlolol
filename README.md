@@ -8,3 +8,16 @@ code into XML over a weekend and without a combined 1MM of funding ([1][], [2][]
 [1]: http://www.nsf.gov/awardsearch/showAward?AWD_ID=1305292
 [2]: http://www.nsf.gov/awardsearch/showAward?AWD_ID=1305217
 
+Usage
+-----
+
+1. Compile grammar with ANTLR4:
+
+    antlr4 Java.g4
+    javac *.java
+
+2. Run with srcmlolol:
+
+    java srcmlolol.App Java someFile1.java someFile2.java
+
+All XML will be written to stdout. Use redirection like an adult.
