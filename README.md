@@ -14,15 +14,14 @@ Usage
 -----
 
 1. Compile grammar with ANTLR4:
-``` shell
-antlr4 Java.g4
-javac *.java
-```
+
+    antlr4 Java.g4
+    javac *.java
+
 2. Compile and run srcMLOLOL:
-``` shell
-ant
-java -jar dist/srcMLOLOL.jar Java Lol.java
-```
+
+    ant
+    java -jar dist/srcMLOLOL.jar Java Lol.java
 
 All XML will be written to stdout. Use redirection like an adult.
 
