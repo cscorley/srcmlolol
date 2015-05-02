@@ -1,7 +1,7 @@
-srcmlolol
+srcMLOLOL
 =========
 
-`srcmlolol` is an attempt to write a more general [srcML][] that uses ANTLR 4 
+`srcMLOLOL` is an attempt to write a more general [srcML][] that uses ANTLR 4 
 and any given grammar to parse source code into XML over a weekend without a 
 combined 1MM of funding ([1][], [2][]).
 
@@ -18,8 +18,12 @@ Usage
         antlr4 Java.g4 -o .
         javac *.java
 
-2. Run with srcmlolol:
+2. Run with srcMLOLOL:
 
         java -cp /usr/share/java/antlr-complete.jar:. srcmlolol.App Java Lol.java
 
 All XML will be written to stdout. Use redirection like an adult.
+
+Note that this example uses the Java grammar, but it's not required!
+[Use whichever grammar you want](https://github.com/antlr/grammars-v4).
+srcMLOLOL won't judge you.
