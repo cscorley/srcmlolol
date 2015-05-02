@@ -9,12 +9,12 @@ public class XMLListener implements ParseTreeListener {
 
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
-        System.out.println("<" + ctx.getClass().getCanonicalName() + ">");
+        System.out.println("<" + ctx.getClass().getSimpleName().replace("Context", "") + ">");
     }
 
     @Override
     public void exitEveryRule(ParserRuleContext ctx) {
-        System.out.println("</" + ctx.getClass().getCanonicalName() + ">" );
+        System.out.println("</" + ctx.getClass().getSimpleName().replace("Context", "") + ">" );
     }
 
     @Override

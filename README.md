@@ -13,11 +13,11 @@ Usage
 
 1. Compile grammar with ANTLR4:
 
-    antlr4 Java.g4
-    javac *.java
+        antlr4 Java.g4 -o .
+        javac *.java
 
 2. Run with srcmlolol:
 
-    java srcmlolol.App Java someFile1.java someFile2.java
+        java -cp /usr/share/java/antlr-complete.jar:. srcmlolol.App Java Lol.java
 
 All XML will be written to stdout. Use redirection like an adult.
