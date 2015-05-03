@@ -165,6 +165,8 @@ public class App {
 
                 ParseTreeWalker walker = new ParseTreeWalker();
                 XMLListener proxy = new XMLListener();
+
+                System.out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 walker.walk(proxy, tree);
 
             } catch (NoSuchMethodException nsme) {

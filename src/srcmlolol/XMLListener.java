@@ -6,15 +6,30 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
 public class XMLListener implements ParseTreeListener {
+    private int depth = 0;
+
+    private void indent(){
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < depth; i++){
+            sb.append(" ");
+        }
+        System.out.print(sb.toString());
+    }
 
     @Override
     public void enterEveryRule(ParserRuleContext ctx) {
-        System.out.println("<" + ctx.getClass().getSimpleName().replace("Context", "") + ">");
+        indent();
+        String name = ctx.getClass().getSimpleName().replace("Context", "");
+        System.out.println("<" + name + ">");
+        depth++;
     }
 
     @Override
     public void exitEveryRule(ParserRuleContext ctx) {
-        System.out.println("</" + ctx.getClass().getSimpleName().replace("Context", "") + ">" );
+        depth--;
+        indent();
+        String name = ctx.getClass().getSimpleName().replace("Context", "");
+        System.out.println("</" + name + ">");
     }
 
     @Override
@@ -23,7 +38,14 @@ public class XMLListener implements ParseTreeListener {
 
     @Override
     public void visitTerminal(TerminalNode node) {
-        System.out.println(node.getText());
+        indent();
+        String text = node.getText();
+        if (text.equals("<EOF>")){
+            System.out.println("<EOF />");
+        }
+        else{
+            System.out.println(text);
+        }
     }
 
 }
