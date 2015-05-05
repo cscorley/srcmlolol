@@ -4,6 +4,7 @@
     <property name="build" location="bin"/>
     <property name="dist"  location="dist"/>
     <property name="antlr"  location="/usr/share/java/antlr-4.5-complete.jar"/>
+    <property name="common"  location="lib/commons-lang3-3.4.jar"/>
 
     <target name="init">
         <tstamp/>
@@ -28,6 +29,7 @@
             </manifest>
             <fileset dir="${build}"/>
             <zipfileset excludes="META-INF/*.SF" src="${antlr}"/>
+            <zipfileset excludes="META-INF/*.SF" src="${common}"/>
         </jar>
     </target>
 

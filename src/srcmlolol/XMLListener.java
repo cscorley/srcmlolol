@@ -10,6 +10,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -66,6 +67,6 @@ public class XMLListener implements ParseTreeListener {
         if (text.equals("<EOF>")) {
             return;
         }
-        stack.peek().appendChild(doc.createTextNode(text));
+        stack.peek().appendChild(doc.createTextNode(StringEscapeUtils.escapeXml10(text)));
     }
 }
