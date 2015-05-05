@@ -4,6 +4,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
@@ -12,6 +13,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.print.PrintException;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CharStream;
@@ -31,7 +40,7 @@ public class App {
     protected String encoding = null;
 
     public App(String[] args) throws Exception {
-        if (args.length < 2) {
+        if (args.length < 1) {
             System.err
                     .println("java App GrammarName [-start startRuleName] [-encoding = encodingname] [input-filename(s)]");
             System.err.println("Use startRuleName='tokens' if GrammarName is a lexer grammar.");
@@ -68,9 +77,7 @@ public class App {
 
     public static void main(String[] args) throws Exception {
         App app = new App(args);
-        if (args.length >= 2) {
-            app.process();
-        }
+        app.process();
     }
 
     public void process() throws Exception {
@@ -116,7 +123,7 @@ public class App {
                 r = new InputStreamReader(is);
             }
 
-            this.process(lexer, parserClass, parser, is, r);
+            this.process(lexer, parserClass, parser, is, r, "<STDIN>");
             return;
         }
         for (String inputFile : this.inputFiles) {
@@ -134,13 +141,13 @@ public class App {
             if (this.inputFiles.size() > 1) {
                 System.err.println(inputFile);
             }
-            this.process(lexer, parserClass, parser, is, r);
+            this.process(lexer, parserClass, parser, is, r, inputFile);
         }
     }
 
     protected void process(Lexer lexer, Class<? extends Parser> parserClass, Parser parser,
-            InputStream is, Reader r) throws IOException, IllegalAccessException,
-            InvocationTargetException, PrintException {
+            InputStream is, Reader r, String filename) throws IOException, IllegalAccessException,
+            InvocationTargetException, PrintException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
         try {
             ANTLRInputStream input = new ANTLRInputStream(r);
             lexer.setInputStream(input);
@@ -164,10 +171,17 @@ public class App {
                         (Object[]) null);
 
                 ParseTreeWalker walker = new ParseTreeWalker();
-                XMLListener proxy = new XMLListener();
+                XMLListener proxy = new XMLListener(filename);
 
-                System.out.println("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
                 walker.walk(proxy, tree);
+
+                Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+                transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+                transformer.transform(new DOMSource(proxy.doc),
+                        new StreamResult(new OutputStreamWriter(System.out, "UTF-8")));
 
             } catch (NoSuchMethodException nsme) {
                 System.err.println("No method for rule " + this.startRuleName
