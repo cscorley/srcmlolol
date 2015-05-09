@@ -13,6 +13,8 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
 public class XMLListener implements ParseTreeListener {
     private DocumentBuilderFactory factory;
@@ -66,6 +68,13 @@ public class XMLListener implements ParseTreeListener {
         String text = node.getText();
         if (text.equals("<EOF>")) {
             return;
+        }
+        if (stack.peek().hasChildNodes()){
+            NodeList children = stack.peek().getChildNodes();
+            Node lastchild = children.item(children.getLength() - 1);
+            if (lastchild.getNodeType() == Node.TEXT_NODE){
+                text = " " + text;
+            }
         }
         stack.peek().appendChild(doc.createTextNode(StringEscapeUtils.escapeXml10(text)));
     }
