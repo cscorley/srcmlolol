@@ -171,7 +171,7 @@ public class App {
                         (Object[]) null);
 
                 ParseTreeWalker walker = new ParseTreeWalker();
-                XMLListener proxy = new XMLListener(filename);
+                XMLListener proxy = new XMLListener(filename, lexer.getTokenTypeMap());
 
                 walker.walk(proxy, tree);
 

@@ -1,5 +1,7 @@
 package srcmlolol;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Stack;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -7,23 +9,30 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 public class XMLListener implements ParseTreeListener {
+    private Map<Integer, String> token2name;
+    private Map<String, Integer> name2token;
     private DocumentBuilderFactory factory;
     private DocumentBuilder builder;
     private Stack<Element> stack;
     public Document doc;
 
-    public XMLListener(String filename) throws ParserConfigurationException{
+    public XMLListener(String filename, Map<String, Integer> tokenMap) throws ParserConfigurationException{
         stack = new Stack<Element>();
+
+        token2name = new HashMap<Integer, String>();
+        name2token = tokenMap;
+        for (String key : name2token.keySet()){
+            token2name.put(name2token.get(key), key);
+        }
 
         factory = DocumentBuilderFactory.newInstance();
         builder = factory.newDocumentBuilder();
@@ -69,13 +78,20 @@ public class XMLListener implements ParseTreeListener {
         if (text.equals("<EOF>")) {
             return;
         }
-        if (stack.peek().hasChildNodes()){
-            NodeList children = stack.peek().getChildNodes();
-            Node lastchild = children.item(children.getLength() - 1);
-            if (lastchild.getNodeType() == Node.TEXT_NODE){
-                text = " " + text;
-            }
-        }
-        stack.peek().appendChild(doc.createTextNode(StringEscapeUtils.escapeXml10(text)));
+        Token token = node.getSymbol();
+
+        Element tokenelem = doc.createElement(token.getClass().getSimpleName());
+        int type = token.getType();
+        tokenelem.setAttribute("type", Integer.toString(type));
+        tokenelem.setAttribute("name", token2name.get(type));
+        tokenelem.appendChild(doc.createTextNode(StringEscapeUtils.escapeXml10(text)));
+        tokenelem.setAttribute("start_line", Integer.toString(token.getLine()));
+        tokenelem.setAttribute("end_line", Integer.toString(token.getLine()));
+        tokenelem.setAttribute("start_line_char", Integer.toString(token.getCharPositionInLine()));
+        tokenelem.setAttribute("end_line_char", Integer.toString(
+                (token.getCharPositionInLine() + token.getText().length())));
+        tokenelem.setAttribute("start_char", Integer.toString(token.getStartIndex()));
+        tokenelem.setAttribute("end_char", Integer.toString(token.getStopIndex()));
+        stack.peek().appendChild(tokenelem);
     }
 }
