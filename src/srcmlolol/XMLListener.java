@@ -50,12 +50,22 @@ public class XMLListener implements ParseTreeListener {
         String name = ctx.getClass().getSimpleName().replace("Context", "");
         Element rule = doc.createElement(name);
         rule.setAttribute("start_line", Integer.toString(ctx.start.getLine()));
-        rule.setAttribute("end_line", Integer.toString(ctx.stop.getLine()));
         rule.setAttribute("start_line_char", Integer.toString(ctx.start.getCharPositionInLine()));
-        rule.setAttribute("end_line_char", Integer.toString(
-                (ctx.stop.getCharPositionInLine() + ctx.stop.getText().length())));
         rule.setAttribute("start_char", Integer.toString(ctx.start.getStartIndex()));
-        rule.setAttribute("end_char", Integer.toString(ctx.stop.getStopIndex()));
+
+        // occasionally stop isn't set. prefer start token instead.
+        if (ctx.stop == null){
+            rule.setAttribute("end_line", Integer.toString(ctx.start.getLine()));
+            rule.setAttribute("end_line_char", Integer.toString(
+                    (ctx.start.getCharPositionInLine() + ctx.start.getText().length())));
+            rule.setAttribute("end_char", Integer.toString(ctx.start.getStopIndex()));
+        }
+        else{
+            rule.setAttribute("end_line", Integer.toString(ctx.stop.getLine()));
+            rule.setAttribute("end_line_char", Integer.toString(
+                    (ctx.stop.getCharPositionInLine() + ctx.stop.getText().length())));
+            rule.setAttribute("end_char", Integer.toString(ctx.stop.getStopIndex()));
+        }
 
         // attaching to last elem on stack
         stack.peek().appendChild(rule);
