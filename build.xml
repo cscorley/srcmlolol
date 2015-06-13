@@ -3,7 +3,7 @@
     <property name="src" location="src"/>
     <property name="build" location="bin"/>
     <property name="dist"  location="dist"/>
-    <property name="antlr"  location="/usr/share/java/antlr-4.5-complete.jar"/>
+    <property name="antlr"  location="lib/antlr-4.5-complete.jar"/>
     <property name="common"  location="lib/commons-lang3-3.4.jar"/>
 
     <target name="init">
@@ -16,6 +16,7 @@
         <javac srcdir="${src}" destdir="${build}">
             <classpath>
                 <pathelement path="${antlr}"/>
+                <pathelement path="${common}"/>
             </classpath>
         </javac>
     </target>
